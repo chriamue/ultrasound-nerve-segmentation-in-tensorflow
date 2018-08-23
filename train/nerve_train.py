@@ -6,7 +6,7 @@ import numpy as np
 import tensorflow as tf
 
 import sys
-sys.path.append('../')
+#sys.path.append('../')
 import model.nerve_net as nerve_net
 from utils.experiment_manager import make_checkpoint_path
 
@@ -24,15 +24,18 @@ tf.app.flags.DEFINE_float('learning_rate', 1e-5,
                             """ keep probability for dropout """)
 
 
-TRAIN_DIR = make_checkpoint_path(FLAGS.base_dir, FLAGS)
-print(TRAIN_DIR)
 
-def train():
+
+def train(run='run', results_dir="results/", batch_size=1, epochs=5, config={'learn_rate':0.001}):
   """Train ring_net for a number of steps."""
+
+  TRAIN_DIR = make_checkpoint_path(results_dir, FLAGS)
+  print(TRAIN_DIR)
+
   with tf.Graph().as_default():
-    print('batch size', FLAGS.batch_size)
+    print('batch size', batch_size)
     # make inputs
-    image, mask = nerve_net.inputs(FLAGS.batch_size) 
+    image, mask = nerve_net.inputs(batch_size) 
     # create and unrap network
     prediction = nerve_net.inference(image, FLAGS.keep_prob) 
     # calc error
