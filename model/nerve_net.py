@@ -7,11 +7,12 @@ Summary of available functions:
   
   # Create a graph to train on.
 """
-
+from __future__ import absolute_import
 
 import tensorflow as tf
 import numpy as np
-import nerve_architecture
+#from .nerve_architecture import *
+import model.nerve_architecture as nerve_architecture
 import input.nerve_input as nerve_input
 
 FLAGS = tf.app.flags.FLAGS
@@ -62,7 +63,7 @@ def loss_image(prediction, mask):
   #prediction = tf.flatten(prediction)
   intersection = tf.reduce_sum(prediction * mask)
   loss = -(2. * intersection + 1.) / (tf.reduce_sum(mask) + tf.reduce_sum(prediction) + 1.)
-  tf.scalar_summary('loss', loss)
+  tf.summary.scalar('loss', loss)
   return loss
 
 def train(total_loss, lr):
