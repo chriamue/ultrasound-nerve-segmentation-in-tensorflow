@@ -17,7 +17,7 @@ def _bytes_feature(value):
   return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
 
 # create tf writer
-record_filename = '../data/tfrecords/train.tfrecords'
+record_filename = 'data/tfrecords/train.tfrecords'
 
 writer = tf.python_io.TFRecordWriter(record_filename)
 
@@ -26,7 +26,7 @@ shape = (420, 580)
 frames = np.zeros((shape[0], shape[1], 1))
 
 # list of files
-train_filename = glb('../data/train/*') 
+train_filename = glb('data/train/*') 
 mask_filename = [s for s in train_filename if "mask" in s]
 image_filename = [s for s in train_filename if "mask" not in s]
 

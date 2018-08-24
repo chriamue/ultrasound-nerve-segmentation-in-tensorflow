@@ -1,10 +1,15 @@
 import os
 import sys
 import yaml
-from train import nerve_train
+from .train import nerve_train
+
 
 
 def main(run='run', results_dir="results/", batch_size=1, epochs=5, config={}, mode='--train'):
+    if not os.path.exists('data/tfrecords/train.tfrecords'):
+        if not os.path.exists('data/tfrecords/'):
+            os.makedirs('data/tfrecords/')
+        from .utils import createTFRecords
     nerve_train.train(run=run, results_dir=results_dir, batch_size=batch_size, epochs=epochs, config=config)
     
 

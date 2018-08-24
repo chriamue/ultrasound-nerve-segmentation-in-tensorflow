@@ -7,8 +7,8 @@ import tensorflow as tf
 
 import sys
 #sys.path.append('../')
-import model.nerve_net as nerve_net
-from utils.experiment_manager import make_checkpoint_path
+from ..model import nerve_net
+from ..utils.experiment_manager import make_checkpoint_path
 
 FLAGS = tf.app.flags.FLAGS
 

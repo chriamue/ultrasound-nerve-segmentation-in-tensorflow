@@ -12,8 +12,8 @@ from __future__ import absolute_import
 import tensorflow as tf
 import numpy as np
 #from .nerve_architecture import *
-import model.nerve_architecture as nerve_architecture
-import input.nerve_input as nerve_input
+from ..model import nerve_architecture
+from ..input import nerve_input
 
 FLAGS = tf.app.flags.FLAGS
 
