@@ -10,6 +10,8 @@ FLAGS = tf.app.flags.FLAGS
 # Constants describing the training process.
 tf.app.flags.DEFINE_integer('min_queue_examples', 1000,
                            """ min examples to queue up""")
+tf.app.flags.DEFINE_bool('train', False,
+                           """ train""")
 
 def read_data(filename_queue, shape):
   """ reads data from tfrecord files.

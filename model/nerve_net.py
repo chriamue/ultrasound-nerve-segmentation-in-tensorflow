@@ -28,6 +28,8 @@ tf.app.flags.DEFINE_bool('gated_res', True,
                            """ gated resnet or not """)
 tf.app.flags.DEFINE_string('nonlinearity', 'concat_elu',
                            """ nonlinearity used such as concat_elu, elu, concat_relu, relu """)
+tf.app.flags.DEFINE_bool('submit', False,
+                           """ submit """)
 
 def inputs(batch_size):
   """makes input vector

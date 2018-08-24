@@ -2,10 +2,13 @@ import os
 import sys
 import yaml
 from .train import nerve_train
-
+from .test import nerve_test
 
 
 def main(run='run', results_dir="results/", batch_size=1, epochs=5, config={}, mode='--train'):
+    if mode=='--submit':
+        nerve_test.evaluate(results_dir=results_dir)
+        return
     if not os.path.exists('data/tfrecords/train.tfrecords'):
         if not os.path.exists('data/tfrecords/'):
             os.makedirs('data/tfrecords/')

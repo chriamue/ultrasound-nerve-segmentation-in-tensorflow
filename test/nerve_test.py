@@ -3,6 +3,7 @@ from __future__ import division
 from __future__ import print_function
 
 from datetime import datetime
+import os
 import math
 import time
 import cv2
@@ -16,27 +17,11 @@ import tensorflow as tf
 import sys
 sys.path.append('../')
 
-import model.nerve_net as nerve_net 
-import input.nerve_input as nerve_input
-from run_length_encoding import RLenc
-from utils.experiment_manager import make_checkpoint_path
+from ..model import nerve_net
+from ..input import nerve_input
+from .run_length_encoding import RLenc
+from ..utils.experiment_manager import make_checkpoint_path
 
-FLAGS = tf.app.flags.FLAGS
-
-tf.app.flags.DEFINE_string('base_dir', '../checkpoints',
-                            """dir to store trained net """)
-tf.app.flags.DEFINE_integer('batch_size', 8,
-                            """ training batch size """)
-tf.app.flags.DEFINE_integer('max_steps', 500000,
-                            """ max number of steps to train """)
-tf.app.flags.DEFINE_float('keep_prob', 0.7,
-                            """ keep probability for dropout """)
-tf.app.flags.DEFINE_float('learning_rate', 1e-5,
-                            """ keep probability for dropout """)
-#tf.app.flags.DEFINE_bool('view_images', 'False',
-#                            """ If you want to view image and generated masks""")
-
-TEST_DIR = make_checkpoint_path(FLAGS.base_dir, FLAGS)
 
 def tryint(s):
   try:
@@ -47,7 +32,7 @@ def tryint(s):
 def alphanum_key(s):
   return [ tryint(c) for c in re.split('([0-9]+)', s) ]
 
-def evaluate():
+def evaluate(results_dir="results/"):
   """Run Eval once.
 
   Args:
@@ -56,8 +41,10 @@ def evaluate():
     top_k_op: Top K op.
     summary_op: Summary op.
   """
+  FLAGS = tf.app.flags.FLAGS
+  TEST_DIR = make_checkpoint_path(results_dir, FLAGS)
   # get a list of image filenames
-  filenames = glb('../data/test/*')
+  filenames = glb('data/test/*')
   # sort the file names but this is probably not ness
   filenames.sort(key=alphanum_key)
   #num_files = len(filename)
@@ -75,7 +62,7 @@ def evaluate():
     saver = tf.train.Saver(variables_to_restore)
 
     # Build the summary operation based on the TF collection of Summaries.
-    summary_op = tf.merge_all_summaries()
+    summary_op = tf.summary.merge_all()
     
     sess = tf.Session()
 
@@ -89,14 +76,14 @@ def evaluate():
     #                                        graph_def=graph_def)
 
     # make csv file
-    csvfile = open('test.csv', 'wb') 
+    csvfile = open(results_dir+'submission.csv', 'w') 
     writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-    writer.writerow(['img', 'pixels'])
+    writer.writerow(["img", "pixels"])
 
+    prediction_path = results_dir+'prediction/'
     for f in filenames:
-      # name to save 
-      prediction_path = '../data/prediction/'
-      name = f[13:-4]
+      # name to save
+      name = os.path.basename(f)[:-4]
       print(name)
      
       # read in image
@@ -118,7 +105,7 @@ def evaluate():
       generated_mask[:][generated_mask[:]>threshold]=1 
       run_length_encoding = RLenc(generated_mask)
       writer.writerow([name, run_length_encoding])
-      print(run_length_encoding)
+      #print(run_length_encoding)
 
       '''
       # convert to display 
