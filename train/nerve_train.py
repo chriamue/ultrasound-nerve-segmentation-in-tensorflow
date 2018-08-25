@@ -46,7 +46,8 @@ def train(run='run', results_dir="results/", batch_size=1, epochs=5, config={'le
     variables = tf.all_variables()
 
     # Build a saver
-    saver = tf.train.Saver(tf.all_variables())   
+    saver = tf.train.Saver(tf.all_variables())
+
     #for i, variable in enumerate(variables):
     #  print '----------------------------------------------'
     #  print variable.name[:variable.name.index(':')]
@@ -60,6 +61,7 @@ def train(run='run', results_dir="results/", batch_size=1, epochs=5, config={'le
     # Start running operations on the Graph.
     sess = tf.Session()
 
+
     # init if this is the very time training
     print("init network from scratch")
     sess.run(init)
@@ -67,11 +69,15 @@ def train(run='run', results_dir="results/", batch_size=1, epochs=5, config={'le
     # Start que runner
     tf.train.start_queue_runners(sess=sess)
 
+    # load checkpoint
+    ckpt = tf.train.get_checkpoint_state(TRAIN_DIR)
+    saver.restore(sess, ckpt.model_checkpoint_path)
+
     # Summary op
     graph_def = sess.graph.as_graph_def(add_shapes=True)
     summary_writer = tf.summary.FileWriter(TRAIN_DIR, graph_def=graph_def)
 
-    for step in range(FLAGS.max_steps):
+    for step in range(epochs*5500):
       t = time.time()
       _ , loss_value = sess.run([train_op, error],feed_dict={})
       elapsed = time.time() - t
